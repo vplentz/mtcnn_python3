@@ -6,7 +6,6 @@ import math
 import cv2
 from multiprocessing import Pool
 from itertools import repeat
-from itertools import izip
 from helper import nms, adjust_input, generate_bbox, detect_first_stage_warpper
 
 class MtcnnDetector(object):
@@ -48,7 +47,7 @@ class MtcnnDetector(object):
         # load 4 models from folder
         models = ['det1', 'det2', 'det3','det4']
         models = [ os.path.join(model_folder, f) for f in models]
-        
+
         self.PNets = []
         for i in range(num_worker):
             workner_net = mx.model.FeedForward.load(models[0], 1, ctx=ctx)
@@ -114,7 +113,7 @@ class MtcnnDetector(object):
         bbox[:, 0:4] = bbox[:, 0:4] + aug
         return bbox
 
- 
+
     def pad(self, bboxes, w, h):
         """
             pad the the bboxes, alse restrict the size of it
@@ -184,7 +183,7 @@ class MtcnnDetector(object):
                 yield l[i:i + n]
         num_list = range(number)
         return list(chunks(num_list, self.num_worker))
-        
+
 
     def detect_face(self, img):
         """
@@ -234,20 +233,20 @@ class MtcnnDetector(object):
         #    return_boxes = self.detect_first_stage(img, scale, 0)
         #    if return_boxes is not None:
         #        total_boxes.append(return_boxes)
-        
+
         sliced_index = self.slice_index(len(scales))
         total_boxes = []
         for batch in sliced_index:
             local_boxes = self.Pool.map( detect_first_stage_warpper, \
-                    izip(repeat(img), self.PNets[:len(batch)], [scales[i] for i in batch], repeat(self.threshold[0])) )
+                    zip(repeat(img), self.PNets[:len(batch)], [scales[i] for i in batch], repeat(self.threshold[0])) )
             total_boxes.extend(local_boxes)
-        
-        # remove the Nones 
+
+        # remove the Nones
         total_boxes = [ i for i in total_boxes if i is not None]
 
         if len(total_boxes) == 0:
             return None
-        
+
         total_boxes = np.vstack(total_boxes)
 
         if total_boxes.size == 0:
@@ -345,7 +344,7 @@ class MtcnnDetector(object):
         pick = nms(total_boxes, 0.7, 'Min')
         total_boxes = total_boxes[pick]
         points = points[pick]
-        
+
         if not self.accurate_landmark:
             return total_boxes, points
 
@@ -398,7 +397,7 @@ class MtcnnDetector(object):
                 input list
         Retures:
         -------
-            colMat: 
+            colMat:
 
         """
         assert len(pts_list) > 0
@@ -414,8 +413,8 @@ class MtcnnDetector(object):
             find transform between shapes
         Parameters:
         ----------
-            from_shape: 
-            to_shape: 
+            from_shape:
+            to_shape:
         Retures:
         -------
             tran_m:
@@ -428,8 +427,8 @@ class MtcnnDetector(object):
         cov = np.matrix([[0.0, 0.0], [0.0, 0.0]])
 
         # compute the mean and cov
-        from_shape_points = from_shape.reshape(from_shape.shape[0]/2, 2)
-        to_shape_points = to_shape.reshape(to_shape.shape[0]/2, 2)
+        from_shape_points = from_shape.reshape((int) (from_shape.shape[0]/2), 2)
+        to_shape_points = to_shape.reshape((int)(to_shape.shape[0]/2), 2)
         mean_from = from_shape_points.mean(axis=0)
         mean_to = to_shape_points.mean(axis=0)
 
@@ -463,7 +462,7 @@ class MtcnnDetector(object):
 
         return tran_m, tran_b
 
-    def extract_image_chips(self, img, points, desired_size=256, padding=0):
+    def extract_image_chips(self, img, points, desired_size=64, padding=0):
         """
             crop and align face
         Parameters:
@@ -476,12 +475,12 @@ class MtcnnDetector(object):
         Retures:
         -------
             crop_imgs: list, n
-                cropped and aligned faces 
+                cropped and aligned faces
         """
         crop_imgs = []
         for p in points:
             shape  =[]
-            for k in range(len(p)/2):
+            for k in range((int) (len(p)/2)):
                 shape.append(p[k])
                 shape.append(p[k+5])
 
@@ -496,7 +495,7 @@ class MtcnnDetector(object):
             from_points = []
             to_points = []
 
-            for i in range(len(shape)/2):
+            for i in range((int) (len(shape)/2)):
                 x = (padding + mean_face_shape_x[i]) / (2 * padding + 1) * desired_size
                 y = (padding + mean_face_shape_y[i]) / (2 * padding + 1) * desired_size
                 to_points.append([x, y])
@@ -531,4 +530,3 @@ class MtcnnDetector(object):
             crop_imgs.append(chips)
 
         return crop_imgs
-

@@ -1,12 +1,12 @@
-# MTCNN_face_detection_and_alignment
+# MTCNN_face_detection_and_alignment using PYTHON3
 
 ## About
 
-  This is a python/mxnet implementation of [Zhang](https://kpzhang93.github.io/)'s work **<Joint Face Detection and Alignment using Multi-task Cascaded Convolutional Neural Networks>**. it's fast and accurate,  see [link](https://github.com/kpzhang93/MTCNN_face_detection_alignment). 
+  This is a python3/mxnet implementation of [Zhang](https://kpzhang93.github.io/)'s work **<Joint Face Detection and Alignment using Multi-task Cascaded Convolutional Neural Networks>**. it's fast and accurate,  see [link](https://github.com/kpzhang93/MTCNN_face_detection_alignment). 
 
   It should have **almost** the same output with the original work,  for mxnet fans and those can't afford matlab :)
 
-[中文blog](https://pangyupo.github.io/2016/10/22/mxnet-mtcnn/)
+This is a fork form (https://github.com/pangyupo/mxnet_mtcnn_face_detection) repository.
 
 ## Requirement	  
 
@@ -15,16 +15,15 @@
   ​	I use cv2 for image io and resize(much faster than skimage), the input image's channel is acutally BGR
 
 - mxnet 
+	If you want to use GPU, you have to install mxnet-cuxx - xx should be replaced by your cuda version (example mxnet-cu92 for Cuda 9.2)
 
-  ​	**please update to the newest version, we need 'full' mode in Pooling operation**
-
-Only tested on Linux and Mac
+Only tested on Linux in CPU mode
 
 ## Test
 
 run:
 
- ``python main.py`` 
+ ``python3 main.py`` 
 
 you can change `ctx` to `mx.gpu(0)` for faster detection
 
@@ -52,7 +51,7 @@ see `mtcnn_detector.py` for the details about the parameters. this function use 
 
 MIT LICENSE
 
-
+/
 
 ## Reference
 
