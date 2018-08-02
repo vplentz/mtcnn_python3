@@ -6,7 +6,7 @@
 
   It should have **almost** the same output with the original work,  for mxnet fans and those can't afford matlab :)
 
-This is a fork form (https://github.com/pangyupo/mxnet_mtcnn_face_detection) repository.
+This is a fork from (https://github.com/pangyupo/mxnet_mtcnn_face_detection) repository.
 
 ## Requirement	  
 
@@ -15,7 +15,8 @@ This is a fork form (https://github.com/pangyupo/mxnet_mtcnn_face_detection) rep
   ​	I use cv2 for image io and resize(much faster than skimage), the input image's channel is acutally BGR
 
 - mxnet 
-	If you want to use GPU, you have to install mxnet-cuxx - xx should be replaced by your cuda version (example mxnet-cu92 for Cuda 9.2)
+
+  ​	If you want to use GPU, you have to install mxnet-cuxx - xx should be replaced by your cuda version (example mxnet-cu92 for Cuda 9.2)
 
 Only tested on Linux in CPU mode
 
